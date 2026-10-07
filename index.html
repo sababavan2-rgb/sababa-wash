@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sababa Wash — הזמנת שטיפת רכב</title>
+<meta name="description" content="Выездная мойка автопарка компании: заявка и оплата онлайн.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1011;
+    --card: #ffffff;
+    --soft: #f4f4f2;
+    --ink: #0d0d0d;
+    --ink-soft: #5c5c5c;
+    --line: #e4e4e0;
+    --accent: #ff6a1a;
+    --radius: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Geist", "Heebo", "Inter", system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, #3a2a20 0%, transparent 60%),
+      var(--bg);
+    color: #fff; line-height: 1.5; min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  .brand { unicode-bidi: isolate; direction: ltr; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 14px 22px; border-radius: var(--radius); border: 1px solid transparent;
+    font: inherit; font-weight: 500; font-size: 15px; cursor: pointer;
+    transition: transform .15s, background .15s, border-color .15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: #ff7e3a; }
+  .btn-outline { border-color: var(--line); background: #fff; color: var(--ink); }
+  .btn-outline:hover { border-color: var(--ink); }
+  .btn[hidden] { display: none; }
+
+  /* ---------- Header ---------- */
+  header { padding: 20px 0; }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; letter-spacing: .04em; }
+  .logo-mark { width: 30px; height: 30px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; font-size: 16px; }
+  .tag { font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.2); border-radius: 4px; padding: 3px 8px; }
+  [dir="rtl"] .tag { letter-spacing: 0; }
+  .lang-switch { display: flex; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: var(--radius); padding: 3px; }
+  .lang-switch button { font: inherit; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7); background: none; border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+  .lang-switch button:hover { color: #fff; }
+  .lang-switch button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+
+  /* ---------- Intro ---------- */
+  .intro { padding: 40px 0 32px; }
+  .intro h1 { font-size: clamp(30px, 4.6vw, 48px); font-weight: 500; line-height: 1.1; letter-spacing: -.02em; max-width: 720px; }
+
+  /* ---------- Layout ---------- */
+  .booking { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; padding-bottom: 64px; }
+  .form-card { background: var(--card); color: var(--ink); border-radius: 12px; padding: 32px; }
+
+  .progress { display: flex; gap: 8px; margin-bottom: 28px; }
+  .progress div { flex: 1; }
+  .progress i { display: block; height: 4px; border-radius: 2px; background: var(--line); transition: background .3s; }
+  .progress span { display: block; font-size: 12px; color: var(--ink-soft); margin-top: 8px; }
+  .progress .done i, .progress .active i { background: var(--accent); }
+  .progress .active span { color: var(--ink); font-weight: 500; }
+
+  .step-pane { display: none; }
+  .step-pane.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .step-pane h3 { font-size: 24px; font-weight: 500; margin-bottom: 6px; }
+  .step-pane > p { color: var(--ink-soft); margin-bottom: 24px; }
+
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 14px; font-weight: 500; }
+  .field input, .field select, .field textarea {
+    font: inherit; font-size: 16px; padding: 13px 14px; border: 1px solid var(--line);
+    border-radius: var(--radius); background: #fff; color: var(--ink); width: 100%;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,106,26,.15); }
+  .field.invalid input, .field.invalid select { border-color: #d93025; }
+  .field .err { font-size: 13px; color: #d93025; display: none; }
+  .field.invalid .err { display: block; }
+  [dir="rtl"] input[dir="ltr"] { text-align: right; }
+  .plate { letter-spacing: .08em; font-weight: 600; }
+
+  /* Автомобили */
+  .cars { display: grid; gap: 12px; }
+  .car { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: var(--soft); }
+  .car-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .car-head b { font-weight: 500; }
+  .car-remove { font: inherit; font-size: 14px; color: var(--ink-soft); background: none; border: 0; cursor: pointer; }
+  .car-remove:hover { color: #d93025; }
+  .car .fields { grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; }
+  .add-car {
+    width: 100%; margin-top: 12px; padding: 14px; font: inherit; font-weight: 500; font-size: 15px;
+    border: 1.5px dashed #c8c8c4; border-radius: 10px; background: none; color: var(--ink); cursor: pointer;
+  }
+  .add-car:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Выбор (услуги, оплата) */
+  .choice { position: relative; }
+  .choice input { position: absolute; opacity: 0; pointer-events: none; }
+  .choice label { display: flex; gap: 14px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 16px; cursor: pointer; height: 100%; transition: border-color .15s, background .15s; }
+  .choice label:hover { border-color: #bbb; }
+  .choice input:checked + label { border-color: var(--accent); background: #fff6f1; box-shadow: inset 0 0 0 1px var(--accent); }
+  .choice input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .choice b { font-weight: 500; font-size: 15px; }
+  .choice small { color: var(--ink-soft); font-size: 13px; }
+  .svc-list { display: grid; gap: 10px; }
+  .svc-group { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin: 18px 0 2px; }
+  .svc-group:first-child { margin-top: 0; }
+  [dir="rtl"] .svc-group { letter-spacing: 0; }
+  input[type="radio"] + label .check { border-radius: 50%; }
+  .check { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid #c8c8c4; flex-shrink: 0; display: grid; place-items: center; color: #fff; font-size: 13px; }
+  .choice input:checked + label .check { background: var(--accent); border-color: var(--accent); }
+  .svc-info { flex: 1; }
+  .svc-price { font-weight: 600; white-space: nowrap; }
+  .svc-price small { font-weight: 400; }
+
+  .pay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pay-grid label { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .pay-ic { font-size: 22px; margin-bottom: 4px; }
+
+  .agree { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ink-soft); margin-top: 20px; cursor: pointer; }
+  .agree input { margin-top: 3px; accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+  .form-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+
+  /* ---------- Итог ---------- */
+  .summary { background: #18191b; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 28px; position: sticky; top: 24px; }
+  .summary h4 { font-size: 14px; color: rgba(255,255,255,.6); font-weight: 500; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+  [dir="rtl"] .summary h4 { letter-spacing: 0; }
+  .sum-row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; padding: 7px 0; color: rgba(255,255,255,.85); }
+  .sum-row span:first-child { color: rgba(255,255,255,.55); }
+  .sum-lines { border-top: 1px solid rgba(255,255,255,.1); margin-top: 8px; padding-top: 8px; min-height: 40px; }
+  .sum-empty { font-size: 14px; color: rgba(255,255,255,.4); padding: 8px 0; }
+  .sum-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(255,255,255,.1); margin-top: 12px; padding-top: 16px; }
+  .sum-total b { font-size: 30px; font-weight: 600; }
+  .sum-vat { font-size: 13px; color: rgba(255,255,255,.5); text-align: end; margin-top: 2px; }
+  .sum-note { font-size: 13px; color: rgba(255,255,255,.45); margin-top: 14px; }
+
+  /* ---------- Модальное окно ---------- */
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; place-items: center; z-index: 100; padding: 16px; }
+  .modal.open { display: grid; }
+  .modal-card { background: #fff; color: var(--ink); border-radius: 12px; padding: 36px; max-width: 440px; width: 100%; text-align: center; }
+  .modal-ic { width: 56px; height: 56px; border-radius: 50%; background: #fff1e8; color: var(--accent); display: grid; place-items: center; font-size: 28px; margin: 0 auto 18px; }
+  .modal-card h3 { font-size: 24px; font-weight: 500; margin-bottom: 8px; }
+  .modal-card p { color: var(--ink-soft); margin-bottom: 24px; }
+
+  footer { border-top: 1px solid rgba(255,255,255,.08); padding: 24px 0 32px; font-size: 14px; color: rgba(255,255,255,.55); }
+  .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 900px) {
+    .booking { grid-template-columns: 1fr; }
+    .summary { position: static; }
+  }
+  @media (max-width: 640px) {
+    .fields, .car .fields { grid-template-columns: 1fr; }
+    .pay-grid { grid-template-columns: 1fr; }
+    .form-card { padding: 22px; }
+    .progress span { display: none; }
+    .tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head">
+    <div class="logo"><span class="logo-mark">S</span><span class="brand">Sababa Wash</span><span class="tag" data-i18n="tag"></span></div>
+    <div class="lang-switch" role="group" aria-label="Язык / שפה">
+      <button type="button" data-lang="ru" lang="ru">RU</button>
+      <button type="button" data-lang="he" lang="he">עב</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="intro">
+    <h1 data-i18n="intro.title"></h1>
+  </div>
+
+  <div class="booking">
+    <form class="form-card" id="bookingForm" novalidate>
+      <div class="progress" id="progress">
+        <div class="active"><i></i><span data-i18n="p1"></span></div>
+        <div><i></i><span data-i18n="p2"></span></div>
+        <div><i></i><span data-i18n="p3"></span></div>
+        <div><i></i><span data-i18n="p4"></span></div>
+      </div>
+
+      <!-- Шаг 1: компания и контактное лицо -->
+      <div class="step-pane active">
+        <h3 data-i18n="s1.title"></h3>
+        <p data-i18n="s1.text"></p>
+        <div class="fields">
+          <div class="field"><label for="firstName" data-i18n="s1.first"></label><input id="firstName" name="firstName" autocomplete="given-name" required><span class="err" data-i18n="s1.firstErr"></span></div>
+          <div class="field"><label for="lastName" data-i18n="s1.last"></label><input id="lastName" name="lastName" autocomplete="family-name" required><span class="err" data-i18n="s1.lastErr"></span></div>
+          <div class="field"><label for="email" data-i18n="s1.email"></label><input id="email" name="email" type="email" dir="ltr" autocomplete="email" placeholder="name@gmail.com" required><span class="err" data-i18n="s1.emailErr"></span></div>
+          <div class="field"><label for="phone" data-i18n="s1.phone"></label><input id="phone" name="phone" type="tel" dir="ltr" autocomplete="tel" placeholder="050-123-4567" required><span class="err" data-i18n="s1.phoneErr"></span></div>
+        </div>
+      </div>
+
+      <!-- Шаг 2: автомобили -->
+      <div class="step-pane">
+        <h3 data-i18n="s2.title"></h3>
+        <p data-i18n="s2.text"></p>
+        <div class="cars" id="cars"></div>
+        <button type="button" class="add-car" id="addCar" data-i18n="s2.add"></button>
+      </div>
+
+      <!-- Шаг 3: услуги, дата, адрес -->
+      <div class="step-pane">
+        <h3 data-i18n="s3.title"></h3>
+        <p data-i18n="s3.text"></p>
+        <div class="svc-list" id="svcList"></div>
+        <div class="field full" id="svcError" style="margin-top:8px"><span class="err" data-i18n="s3.svcErr"></span></div>
+        <div class="fields" style="margin-top:20px">
+          <div class="field full"><label for="comment" data-i18n="s3.comment"></label><textarea id="comment" name="comment" data-i18n-ph="s3.commentPh"></textarea></div>
+        </div>
+      </div>
+
+      <!-- Шаг 4: оплата -->
+      <div class="step-pane">
+        <h3 data-i18n="s4.title"></h3>
+        <p data-i18n="s4.text"></p>
+        <div class="pay-grid">
+          <div class="choice"><input type="radio" name="payment" id="payCard" value="card" checked><label for="payCard"><span class="pay-ic">💳</span><b data-i18n="s4.card"></b><small>Visa, Mastercard, Isracard</small></label></div>
+          <div class="choice"><input type="radio" name="payment" id="payBit" value="bit"><label for="payBit"><span class="pay-ic">⚡</span><b>Bit</b><small data-i18n="s4.bitText"></small></label></div>
+          <div class="choice"><input type="radio" name="payment" id="payInvoice" value="invoice"><label for="payInvoice"><span class="pay-ic">🏦</span><b data-i18n="s4.invoice"></b><small data-i18n="s4.invoiceText"></small></label></div>
+        </div>
+        <label class="agree"><input type="checkbox" id="agree"><span data-i18n="s4.agree"></span></label>
+        <div class="field" id="agreeError"><span class="err" data-i18n="s4.agreeErr"></span></div>
+      </div>
+
+      <div class="form-nav">
+        <button type="button" class="btn btn-outline" id="prevBtn" hidden></button>
+        <button type="button" class="btn btn-accent" id="nextBtn" style="margin-inline-start:auto"></button>
+      </div>
+    </form>
+
+    <aside class="summary">
+      <h4 data-i18n="sum.title"></h4>
+      <div class="sum-row"><span data-i18n="sum.client"></span><span id="sumClient">—</span></div>
+      <div class="sum-row"><span data-i18n="sum.cars"></span><span id="sumCars">—</span></div>
+      <div class="sum-lines" id="sumLines"></div>
+      <div class="sum-total"><span data-i18n="sum.total"></span><b id="sumTotal"></b></div>
+      <div class="sum-vat" id="sumVat"></div>
+      <p class="sum-note" data-i18n="sum.note"></p>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© <span id="year"></span> <span class="brand">Sababa Wash</span></span>
+    <span><span data-i18n="foot.q"></span> <a href="tel:+972500000000" dir="ltr">+972 50-000-0000</a> · <a href="mailto:hello@example.com">hello@example.com</a></span>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="modal-ic">✓</div>
+    <h3 id="modalTitle" data-i18n="modal.title"></h3>
+    <p id="modalText"></p>
+    <button class="btn btn-accent" id="modalClose" data-i18n="modal.close"></button>
+  </div>
+</div>
+
+<script>
+  // ===== Тексты на двух языках =====
+  const I18N = {
+    ru: {
+      pageTitle: "Sababa Wash — заказать мойку авто",
+      tag: "для бизнеса",
+      "intro.title": "Заказать мойку авто",
+      p1: "1. О вас", p2: "2. Автомобили", p3: "3. Услуги", p4: "4. Оплата",
+      "s1.title": "Ваши данные", "s1.text": "Чтобы мы могли связаться с вами.",
+      "s1.first": "Имя", "s1.firstErr": "Укажите имя", "s1.last": "Фамилия", "s1.lastErr": "Укажите фамилию",
+      "s1.email": "Email", "s1.emailErr": "Проверьте email", "s1.phone": "Телефон", "s1.phoneErr": "Проверьте номер телефона",
+      "s2.title": "Автомобили", "s2.text": "Добавьте все машины, которые нужно обслужить. От размера авто зависит цена полировки кузова.",
+      "s2.car": "Автомобиль", "s2.remove": "Удалить", "s2.add": "+ Добавить автомобиль",
+      "s2.model": "Марка и модель", "s2.modelPh": "Toyota Corolla", "s2.modelErr": "Укажите автомобиль",
+      "s2.plate": "Госномер", "s2.plateErr": "7 или 8 цифр", "s2.class": "Размер авто",
+      "cls.small": "Седан / хэтч", "cls.cross": "Кроссовер", "cls.suv": "Внедорожник", "cls.van": "Минивэн / фургон",
+      "s3.title": "Услуги", "s3.text": "Выбранные услуги будут выполнены для каждого автомобиля.",
+      "s3.svcErr": "Выберите хотя бы одну услугу", "s3.perCar": "за авто",
+      "grp.wash": "Мойка", "grp.extra": "Дополнительно", "s3.from": "от",
+      "svc.ext": "Мойка снаружи",        "svc.ext.d": "Кузов, диски, стёкла, сушка.",
+      "svc.int": "Мойка внутри",         "svc.int.d": "Пылесос салона, пластик, стёкла изнутри.",
+      "svc.full": "Снаружи и внутри",    "svc.full.d": "Полная мойка: кузов, диски и салон.",
+      "svc.headlights": "Полировка фар", "svc.headlights.d": "Возвращает прозрачность помутневшим фарам.",
+      "svc.polish": "Полировка кузова",  "svc.polish.d": "Убирает мелкие царапины и возвращает блеск. Цена зависит от размера авто.",
+      "s3.comment": "Комментарий <span style=\"color:var(--ink-soft);font-weight:400\">(необязательно)</span>",
+      "s3.commentPh": "Например: особые пожелания по машине",
+      "s4.title": "Способ оплаты", "s4.text": "Проверьте итог заказа и выберите, как удобнее оплатить.",
+      "s4.card": "Картой онлайн", "s4.bitText": "Оплата через приложение Bit",
+      "s4.invoice": "Банковский перевод", "s4.invoiceText": "Пришлём счёт на email",
+      "s4.agree": "Согласен с обработкой персональных данных и условиями оказания услуг", "s4.agreeErr": "Нужно ваше согласие",
+      "btn.prev": "← Назад", "btn.next": "Далее →", "btn.pay": "Оплатить", "btn.invoice": "Получить счёт",
+      "sum.title": "Ваш заказ", "sum.client": "Клиент", "sum.cars": "Автомобилей",
+      "sum.empty": "Услуги не выбраны", "sum.total": "Итого", "sum.vat": "в т.ч. НДС (<bdi dir=\"rtl\">מע״מ</bdi>) 18%:",
+      "sum.note": "Окончательную стоимость подтвердим после осмотра автомобилей.",
+      "foot.q": "Вопросы?",
+      "modal.title": "Заявка отправлена!", "modal.close": "Отлично",
+      "modal.pay": "Демо-режим: здесь будет переход на страницу оплаты. После оплаты мы свяжемся с вами для подтверждения.",
+      "modal.invoice": "Счёт на сумму {sum} придёт на {email} в течение рабочего дня.",
+    },
+    he: {
+      pageTitle: "Sababa Wash — הזמנת שטיפת רכב",
+      tag: "לעסקים",
+      "intro.title": "הזמנת שטיפת רכב",
+      p1: "1. פרטים", p2: "2. רכבים", p3: "3. שירותים", p4: "4. תשלום",
+      "s1.title": "הפרטים שלכם", "s1.text": "כדי שנוכל ליצור איתכם קשר.",
+      "s1.first": "שם פרטי", "s1.firstErr": "נא למלא שם פרטי", "s1.last": "שם משפחה", "s1.lastErr": "נא למלא שם משפחה",
+      "s1.email": "אימייל", "s1.emailErr": "כתובת אימייל לא תקינה", "s1.phone": "טלפון", "s1.phoneErr": "מספר טלפון לא תקין",
+      "s2.title": "הרכבים", "s2.text": "הוסיפו את כל הרכבים. גודל הרכב משפיע על מחיר הפוליש למרכב.",
+      "s2.car": "רכב", "s2.remove": "הסרה", "s2.add": "+ הוספת רכב",
+      "s2.model": "יצרן ודגם", "s2.modelPh": "Toyota Corolla", "s2.modelErr": "נא למלא את פרטי הרכב",
+      "s2.plate": "מספר רישוי", "s2.plateErr": "7 או 8 ספרות", "s2.class": "גודל הרכב",
+      "cls.small": "סדאן / האצ׳בק", "cls.cross": "קרוסאובר", "cls.suv": "ג׳יפ", "cls.van": "מיניוואן / מסחרי",
+      "s3.title": "שירותים", "s3.text": "השירותים שנבחרו יבוצעו בכל אחד מהרכבים.",
+      "s3.svcErr": "נא לבחור לפחות שירות אחד", "s3.perCar": "לרכב",
+      "grp.wash": "שטיפה", "grp.extra": "שירותים נוספים", "s3.from": "החל מ־",
+      "svc.ext": "שטיפה חיצונית",          "svc.ext.d": "מרכב, חישוקים, חלונות וייבוש.",
+      "svc.int": "ניקוי פנימי",            "svc.int.d": "שאיבת אבק, ניקוי פלסטיקים וחלונות מבפנים.",
+      "svc.full": "חיצונית ופנימית",       "svc.full.d": "שטיפה מלאה: מרכב, חישוקים ופנים הרכב.",
+      "svc.headlights": "פוליש פנסים",     "svc.headlights.d": "מחזיר שקיפות לפנסים עמומים.",
+      "svc.polish": "פוליש למרכב",         "svc.polish.d": "מסיר שריטות קלות ומחזיר את הברק. המחיר תלוי בגודל הרכב.",
+      "s3.comment": "הערות <span style=\"color:var(--ink-soft);font-weight:400\">(לא חובה)</span>",
+      "s3.commentPh": "לדוגמה: בקשות מיוחדות לגבי הרכב",
+      "s4.title": "אמצעי תשלום", "s4.text": "בדקו את סיכום ההזמנה ובחרו איך נוח לכם לשלם.",
+      "s4.card": "כרטיס אשראי", "s4.bitText": "תשלום באפליקציית Bit",
+      "s4.invoice": "העברה בנקאית", "s4.invoiceText": "נשלח חשבונית למייל",
+      "s4.agree": "אני מאשר/ת את עיבוד הנתונים האישיים ואת תנאי השירות", "s4.agreeErr": "נדרש אישור",
+      "btn.prev": "→ חזרה", "btn.next": "המשך ←", "btn.pay": "לתשלום", "btn.invoice": "לקבלת חשבונית",
+      "sum.title": "ההזמנה שלכם", "sum.client": "לקוח", "sum.cars": "רכבים",
+      "sum.empty": "לא נבחרו שירותים", "sum.total": "סה״כ", "sum.vat": "כולל מע״מ 18%:",
+      "sum.note": "המחיר הסופי יאושר לאחר בדיקת הרכבים במקום.",
+      "foot.q": "שאלות?",
+      "modal.title": "ההזמנה התקבלה!", "modal.close": "מעולה",
+      "modal.pay": "מצב הדגמה: כאן יתבצע מעבר לעמוד התשלום. לאחר התשלום ניצור איתכם קשר לאישור.",
+      "modal.invoice": "חשבונית על סך {sum} תישלח אל {email} במהלך יום העסקים.",
+    },
+  };
+
+  // ===== Цены (в шекелях, с НДС) =====
+  // Мойка — выбирается один вариант; дополнительные услуги — галочками.
+  // Цена полировки кузова зависит от размера авто (значения — заглушки).
+  const VAT = 0.18;
+  const SERVICES = [
+    { id: "ext",        group: "wash",  price: 80 },
+    { id: "int",        group: "wash",  price: 80 },
+    { id: "full",       group: "wash",  price: 150 },
+    { id: "headlights", group: "extra", price: 150 },
+    { id: "polish",     group: "extra", price: { small: 400, cross: 500, suv: 600, van: 700 } },
+  ];
+  const CAR_CLASSES = ["small", "cross", "suv", "van"];
+  const priceFor = (s, cls) => typeof s.price === "number" ? s.price : s.price[cls];
+
+  let lang = "he";
+  let step = 0;
+  const t = key => I18N[lang][key] ?? key;
+  const money = n => new Intl.NumberFormat(lang === "he" ? "he-IL" : "ru-RU",
+    { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(Math.round(n));
+  const $ = id => document.getElementById(id);
+
+  function translate(root = document) {
+    root.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
+    root.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  }
+
+  // ===== Услуги =====
+  const svcItem = (s, type) => `
+    <div class="choice">
+      <input type="${type}" name="${type === "radio" ? "wash" : "extra"}" id="svc-${s.id}" value="${s.id}" ${s.id === "full" ? "checked" : ""}>
+      <label for="svc-${s.id}">
+        <span class="check">✓</span>
+        <span class="svc-info"><b data-i18n="svc.${s.id}"></b><br><small data-i18n="svc.${s.id}.d"></small></span>
+        <span class="svc-price" data-svc-price="${s.id}"></span>
+      </label>
+    </div>`;
+  $("svcList").innerHTML =
+    `<div class="svc-group" data-i18n="grp.wash"></div>` +
+    SERVICES.filter(s => s.group === "wash").map(s => svcItem(s, "radio")).join("") +
+    `<div class="svc-group" data-i18n="grp.extra"></div>` +
+    SERVICES.filter(s => s.group === "extra").map(s => svcItem(s, "checkbox")).join("");
+  function svcPriceLabel(s) {
+    if (typeof s.price === "number") return `${money(s.price)} <small>${t("s3.perCar")}</small>`;
+    return `<small>${t("s3.from")}</small> ${money(Math.min(...Object.values(s.price)))}`;
+  }
+
+  // ===== Автомобили (можно добавить несколько) =====
+  let carSeq = 0;
+  function addCar() {
+    const n = ++carSeq;
+    const el = document.createElement("div");
+    el.className = "car";
+    el.innerHTML = `
+      <div class="car-head"><b><span data-i18n="s2.car"></span> <span class="car-num"></span></b>
+        <button type="button" class="car-remove" data-i18n="s2.remove"></button></div>
+      <div class="fields">
+        <div class="field"><label for="model-${n}" data-i18n="s2.model"></label><input id="model-${n}" class="car-model" data-i18n-ph="s2.modelPh" required><span class="err" data-i18n="s2.modelErr"></span></div>
+        <div class="field"><label for="plate-${n}" data-i18n="s2.plate"></label><input id="plate-${n}" class="car-plate plate" dir="ltr" inputmode="numeric" placeholder="12-345-67" maxlength="10" required><span class="err" data-i18n="s2.plateErr"></span></div>
+        <div class="field"><label for="class-${n}" data-i18n="s2.class"></label>
+          <select id="class-${n}" class="car-class">${CAR_CLASSES.map(c => `<option value="${c}" data-i18n="cls.${c}"></option>`).join("")}</select></div>
+      </div>`;
+    el.querySelector(".car-remove").addEventListener("click", () => { el.remove(); renumberCars(); updateSummary(); });
+    $("cars").appendChild(el);
+    translate(el);
+    renumberCars();
+    updateSummary();
+    return el;
+  }
+  function renumberCars() {
+    const cars = [...document.querySelectorAll(".car")];
+    cars.forEach((c, i) => {
+      c.querySelector(".car-num").textContent = i + 1;
+      c.querySelector(".car-remove").hidden = cars.length === 1;
+    });
+  }
+  function getCars() {
+    return [...document.querySelectorAll(".car")].map(c => ({
+      model: c.querySelector(".car-model").value.trim(),
+      plate: c.querySelector(".car-plate").value,
+      cls: c.querySelector(".car-class").value,
+    }));
+  }
+  $("addCar").addEventListener("click", () => addCar().querySelector(".car-model").focus());
+
+  // Израильский номер авто: 7 цифр → 12-345-67, 8 цифр → 123-45-678
+  $("cars").addEventListener("input", e => {
+    if (!e.target.classList.contains("car-plate")) return;
+    const d = e.target.value.replace(/\D/g, "").slice(0, 8);
+    e.target.value = d.length <= 7
+      ? [d.slice(0, 2), d.slice(2, 5), d.slice(5)].filter(Boolean).join("-")
+      : `${d.slice(0, 3)}-${d.slice(3, 5)}-${d.slice(5)}`;
+  });
+
+  // Телефон — только цифры, +, пробелы и дефисы
+  $("phone").addEventListener("input", e => { e.target.value = e.target.value.replace(/[^\d+\-\s]/g, ""); });
+  function validPhone(v) {
+    const d = v.replace(/\D/g, "");
+    if (d.startsWith("972")) return d.length >= 11 && d.length <= 12;
+    return d.startsWith("0") && d.length >= 9 && d.length <= 10;
+  }
+
+  // ===== Итог заказа =====
+  function selectedServices() {
+    return [...document.querySelectorAll('input[name="wash"]:checked, input[name="extra"]:checked')]
+      .map(i => SERVICES.find(s => s.id === i.value)).filter(Boolean);
+  }
+  function orderTotal() {
+    const cars = getCars();
+    return selectedServices().reduce((sum, s) => sum + cars.reduce((a, c) => a + priceFor(s, c.cls), 0), 0);
+  }
+  function updateSummary() {
+    const cars = getCars();
+    $("sumClient").textContent = [$("firstName").value.trim(), $("lastName").value.trim()].filter(Boolean).join(" ") || "—";
+    $("sumCars").textContent = cars.length;
+    const list = selectedServices();
+    $("sumLines").innerHTML = list.length
+      ? list.map(s => {
+          const sum = cars.reduce((a, c) => a + priceFor(s, c.cls), 0);
+          return `<div class="sum-row"><span>${t("svc." + s.id)} × ${cars.length}</span><span>${money(sum)}</span></div>`;
+        }).join("")
+      : `<div class="sum-empty">${t("sum.empty")}</div>`;
+    const total = orderTotal();
+    $("sumTotal").textContent = money(total);
+    $("sumVat").innerHTML = `${t("sum.vat")} ${money(total - total / (1 + VAT))}`;
+    const pay = document.querySelector('input[name="payment"]:checked').value;
+    $("nextBtn").textContent = step < 3 ? t("btn.next")
+      : pay === "invoice" ? t("btn.invoice") : `${t("btn.pay")} ${money(total)}`;
+  }
+  $("bookingForm").addEventListener("input", updateSummary);
+  $("bookingForm").addEventListener("change", updateSummary);
+
+  // ===== Переключение языка =====
+  function setLang(next) {
+    lang = I18N[next] ? next : "he";
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+    document.title = t("pageTitle");
+    translate();
+    document.querySelectorAll("[data-svc-price]").forEach(el => { el.innerHTML = svcPriceLabel(SERVICES.find(s => s.id === el.dataset.svcPrice)); });
+    document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+    $("prevBtn").textContent = t("btn.prev");
+    try { localStorage.setItem("lang", lang); } catch (e) {}
+    updateSummary();
+  }
+  document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+
+  // ===== Пошаговая форма =====
+  const panes = document.querySelectorAll(".step-pane");
+  const bars = document.querySelectorAll("#progress > div");
+
+  function showStep(n) {
+    step = n;
+    panes.forEach((p, i) => p.classList.toggle("active", i === n));
+    bars.forEach((b, i) => { b.classList.toggle("active", i === n); b.classList.toggle("done", i < n); });
+    $("prevBtn").hidden = n === 0;
+    updateSummary();
+  }
+
+  function validateStep(n) {
+    let ok = true;
+    panes[n].querySelectorAll("[required]").forEach(input => {
+      let valid = input.value.trim() !== "";
+      if (input.type === "email") valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+      if (input.id === "phone") valid = validPhone(input.value);
+      if (input.classList.contains("car-plate")) valid = /^\d{7,8}$/.test(input.value.replace(/\D/g, ""));
+      input.closest(".field").classList.toggle("invalid", !valid);
+      if (!valid) ok = false;
+    });
+    if (n === 2) {
+      const has = selectedServices().length > 0;
+      $("svcError").classList.toggle("invalid", !has);
+      if (!has) ok = false;
+    }
+    if (n === 3) {
+      const agreed = $("agree").checked;
+      $("agreeError").classList.toggle("invalid", !agreed);
+      if (!agreed) ok = false;
+    }
+    if (!ok) {
+      const first = panes[n].querySelector(".invalid input, .invalid select");
+      if (first) first.focus();
+    }
+    return ok;
+  }
+
+  $("bookingForm").addEventListener("input", e => {
+    const f = e.target.closest(".field");
+    if (f) f.classList.remove("invalid");
+  });
+
+  $("prevBtn").addEventListener("click", () => showStep(step - 1));
+  $("nextBtn").addEventListener("click", () => {
+    if (!validateStep(step)) return;
+    if (step < panes.length - 1) {
+      showStep(step + 1);
+      $("bookingForm").scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      submitOrder();
+    }
+  });
+
+  // ===== Отправка / оплата =====
+  // TODO: подключить отправку заявки (Telegram / email) и платёжный сервис.
+  function submitOrder() {
+    const data = Object.fromEntries(new FormData($("bookingForm")));
+    Object.assign(data, {
+      firstName: $("firstName").value.trim(), lastName: $("lastName").value.trim(),
+      email: $("email").value.trim(), phone: $("phone").value.trim(),
+      cars: getCars().map(c => ({ model: c.model, plate: c.plate, class: c.cls })),
+      services: selectedServices().map(s => s.id),
+      total: Math.round(orderTotal()), lang,
+    });
+    console.log("Заявка:", data);
+    $("modalText").textContent = data.payment === "invoice"
+      ? t("modal.invoice").replace("{sum}", money(data.total)).replace("{email}", data.email)
+      : t("modal.pay");
+    $("modal").classList.add("open");
+  }
+  $("modalClose").addEventListener("click", () => {
+    $("modal").classList.remove("open");
+    $("bookingForm").reset();
+    $("cars").innerHTML = "";
+    carSeq = 0;
+    addCar();
+    showStep(0);
+  });
+
+  // ===== Старт =====
+  $("year").textContent = new Date().getFullYear();
+  addCar();
+  let saved = null;
+  try { saved = localStorage.getItem("lang"); } catch (e) {}
+  setLang(saved || "he");  // по умолчанию иврит; выбор посетителя запоминается
+</script>
+</body>
+</html>
