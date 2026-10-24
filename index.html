@@ -156,7 +156,6 @@
   .sum-empty { font-size: 14px; color: rgba(255,255,255,.4); padding: 8px 0; }
   .sum-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(255,255,255,.1); margin-top: 12px; padding-top: 16px; }
   .sum-total b { font-size: 30px; font-weight: 600; }
-  .sum-vat { font-size: 13px; color: rgba(255,255,255,.5); text-align: end; margin-top: 2px; }
   .sum-note { font-size: 13px; color: rgba(255,255,255,.45); margin-top: 14px; }
 
   /* ---------- Модальное окно ---------- */
@@ -315,7 +314,6 @@
       <div class="sum-row"><span data-i18n="sum.cars"></span><span id="sumCars">—</span></div>
       <div class="sum-lines" id="sumLines"></div>
       <div class="sum-total"><span data-i18n="sum.total"></span><b id="sumTotal"></b></div>
-      <div class="sum-vat" id="sumVat"></div>
       <p class="sum-note" data-i18n="sum.note"></p>
     </aside>
   </div>
@@ -324,7 +322,7 @@
 <footer>
   <div class="wrap foot">
     <span>© <span id="year"></span> <span class="brand">Sababa Wash</span></span>
-    <span><span data-i18n="foot.q"></span> <a href="tel:+972500000000" dir="ltr">+972 50-000-0000</a> · <a href="mailto:hello@example.com">hello@example.com</a></span>
+    <span><span data-i18n="foot.q"></span> <a href="tel:+972539370406" dir="ltr">053-937-0406</a> · <a href="mailto:sababawash@gmail.com" dir="ltr">sababawash@gmail.com</a></span>
   </div>
 </footer>
 
@@ -374,7 +372,7 @@
       "btn.prev": "← Назад", "btn.next": "Далее →", "btn.send": "Отправить заявку", "btn.sending": "Отправляем…",
       "s4.sendErr": "Не удалось отправить заявку. Проверьте интернет и попробуйте ещё раз.",
       "sum.title": "Ваш заказ", "sum.client": "Клиент", "sum.cars": "Автомобилей",
-      "sum.empty": "Услуги не выбраны", "sum.total": "Итого", "sum.vat": "в т.ч. НДС (<bdi dir=\"rtl\">מע״מ</bdi>) 18%:",
+      "sum.empty": "Услуги не выбраны", "sum.total": "Итого",
       "sum.company": "Компания", "sum.note": "Оплата после мойки.",
       "foot.q": "Вопросы?",
       "order.title": "Ваш заказ", "order.mine": "Мой заказ →",
@@ -428,7 +426,7 @@
       "btn.prev": "→ חזרה", "btn.next": "המשך ←", "btn.send": "שליחת הזמנה", "btn.sending": "שולחים…",
       "s4.sendErr": "לא הצלחנו לשלוח את ההזמנה. בדקו את החיבור לאינטרנט ונסו שוב.",
       "sum.title": "ההזמנה שלכם", "sum.client": "לקוח", "sum.cars": "רכבים",
-      "sum.empty": "לא נבחרו שירותים", "sum.total": "סה״כ", "sum.vat": "כולל מע״מ 18%:",
+      "sum.empty": "לא נבחרו שירותים", "sum.total": "סה״כ",
       "sum.company": "חברה", "sum.note": "התשלום לאחר השטיפה.",
       "foot.q": "שאלות?",
       "order.title": "ההזמנה שלכם", "order.mine": "ההזמנה שלי ←",
@@ -452,7 +450,7 @@
 
   // ===== Куда отправлять заявки =====
   // Адрес веб-приложения Google Таблицы (см. google-sheet-code.js). Пока пусто — форма работает в демо-режиме.
-  const ENDPOINT = "";
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbz3rlvzTDFWWXIVs_BxKTr0w03L6qT-vBjZGuZ0RfqNONsZEpPfbBIKTebtzo_vK8A0/exec";
 
   // ===== Оплата (через Morning, ссылку создаёт Google Таблица) =====
   const TIP_OPTIONS = [0, 10, 20, 30];  // варианты чаевых, ₪
@@ -461,7 +459,6 @@
   // ===== Цены (в шекелях, с НДС) =====
   // Мойка — выбирается один вариант; дополнительные услуги — галочками.
   // Полировка кузова — по договорённости: не входит в сумму и не оплачивается онлайн (quote: true).
-  const VAT = 0.18;
   const SERVICES = [
     { id: "ext",        group: "wash",  price: 80 },
     { id: "int",        group: "wash",  price: 80 },
@@ -582,7 +579,6 @@
       : `<div class="sum-empty">${t("sum.empty")}</div>`;
     const total = orderTotal();
     $("sumTotal").textContent = money(total);
-    $("sumVat").innerHTML = `${t("sum.vat")} ${money(total - total / (1 + VAT))}`;
     $("nextBtn").textContent = step < 3 ? t("btn.next") : t("btn.send");
   }
   $("bookingForm").addEventListener("input", updateSummary);
