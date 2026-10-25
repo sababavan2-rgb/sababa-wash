@@ -179,6 +179,9 @@
   .order-total { display: flex; justify-content: space-between; align-items: baseline; margin: 20px 0; }
   .order-total b { font-size: 30px; font-weight: 600; }
   .pay-btns { display: grid; gap: 10px; }
+  .order-client { font-size: 14px; color: var(--ink-soft); background: var(--soft); border-radius: 8px; padding: 12px 14px; display: grid; gap: 2px; }
+  .order-client b { color: var(--ink); font-weight: 500; }
+  .demo-note { margin-top: 12px; font-size: 14px; background: #fff6f1; border: 1px solid #ffd2b8; color: #9a3412; border-radius: 8px; padding: 10px 12px; }
   .order-card .btn { width: 100%; }
   .order-status { display: inline-block; font-size: 13px; font-weight: 500; border-radius: 999px; padding: 4px 12px; margin-bottom: 14px; background: var(--soft); color: var(--ink-soft); }
   .order-status.ready { background: #fff1e8; color: #c2410c; }
@@ -235,11 +238,15 @@
         <div class="tips" id="tips"></div>
         <div class="field tip-custom" id="tipCustomWrap" hidden><input id="tipCustom" type="number" inputmode="numeric" min="0" max="1000" step="1" data-i18n-ph="order.tipPh"></div>
         <div class="order-total"><span data-i18n="order.toPay"></span><b id="orderTotal"></b></div>
-        <div class="pay-btns">
+        <div class="order-client" id="orderClient"></div>
+        <label class="agree"><input type="checkbox" id="payAgree"><span data-i18n="order.agree"></span></label>
+        <div class="field" id="payAgreeError"><span class="err" data-i18n="s4.agreeErr"></span></div>
+        <div class="pay-btns" style="margin-top:16px">
           <button type="button" class="btn btn-accent" data-pay="card"></button>
           <button type="button" class="btn btn-outline" data-pay="bit"></button>
         </div>
         <div class="field" id="payError"><span class="err" data-i18n="order.payErr"></span></div>
+        <p class="demo-note" id="demoNote" hidden data-i18n="order.demoNote"></p>
         <p class="hint" style="margin-top:12px;text-align:center" data-i18n="order.payHint"></p>
       </div>
     </div>
@@ -265,6 +272,7 @@
           <div class="field"><label for="invoiceName" data-i18n="s1.invoice"></label><input id="invoiceName" name="invoiceName" data-i18n-ph="s1.invoicePh"><span class="hint" data-i18n="s1.invoiceHint"></span></div>
           <div class="field"><label for="email" data-i18n="s1.email"></label><input id="email" name="email" type="email" dir="ltr" autocomplete="email" placeholder="name@gmail.com" required><span class="err" data-i18n="s1.emailErr"></span></div>
           <div class="field"><label for="phone" data-i18n="s1.phone"></label><input id="phone" name="phone" type="tel" dir="ltr" autocomplete="tel" placeholder="050-123-4567" required><span class="err" data-i18n="s1.phoneErr"></span></div>
+          <div class="field"><label for="country" data-i18n="s1.country"></label><select id="country" name="country" autocomplete="country"><option value="IL" data-i18n="s1.countryIL"></option><option value="OTHER" data-i18n="s1.countryOther"></option></select></div>
         </div>
       </div>
 
@@ -321,7 +329,7 @@
 
 <footer>
   <div class="wrap foot">
-    <span>© <span id="year"></span> <span class="brand">Sababa Wash</span></span>
+    <span>© <span id="year"></span> <span class="brand">Sababa Wash</span> · <span data-i18n="foot.owner"></span> · <span data-i18n="foot.address"></span></span>
     <span><span data-i18n="foot.q"></span> <a href="tel:+972539370406" dir="ltr">053-937-0406</a> · <a href="mailto:sababawash@gmail.com" dir="ltr">sababawash@gmail.com</a> · <a href="terms.html" data-i18n="foot.terms"></a></span>
   </div>
 </footer>
@@ -345,7 +353,7 @@
       p1: "1. О вас", p2: "2. Автомобили", p3: "3. Услуги", p4: "4. Подтверждение",
       "s1.title": "Ваши данные", "s1.text": "Чтобы мы могли связаться с вами.",
       "s1.first": "Имя", "s1.firstErr": "Укажите имя", "s1.last": "Фамилия", "s1.lastErr": "Укажите фамилию",
-      "s1.email": "Email", "s1.emailErr": "Проверьте email", "s1.phone": "Телефон", "s1.phoneErr": "Проверьте номер телефона",
+      "s1.email": "Email", "s1.emailErr": "Проверьте email", "s1.phone": "Телефон", "s1.phoneErr": "Проверьте номер телефона", "s1.country": "Страна", "s1.countryIL": "Израиль", "s1.countryOther": "Другая",
       "s1.company": "Компания, в которой вы работаете", "s1.companyErr": "Укажите компанию",
       "s1.invoice": "На чьё имя выписать квитанцию (<bdi dir=\"rtl\">קבלה</bdi>) <span style=\"color:var(--ink-soft);font-weight:400\">(необязательно)</span>",
       "s1.invoicePh": "Имя или название компании", "s1.invoiceHint": "Если оставить пустым, квитанцию выпишем на ваше имя. Пока мы не выписываем налоговые счета (<bdi dir=\"rtl\">חשבונית מס</bdi>), только квитанции (<bdi dir=\"rtl\">קבלה</bdi>).",
@@ -374,7 +382,7 @@
       "sum.title": "Ваш заказ", "sum.client": "Клиент", "sum.cars": "Автомобилей",
       "sum.empty": "Услуги не выбраны", "sum.total": "Итого",
       "sum.company": "Компания", "sum.note": "Оплата после мойки.",
-      "foot.q": "Вопросы?", "foot.terms": "Условия обслуживания",
+      "foot.q": "Вопросы?", "foot.owner": "Daniil Dubovskoi, עוסק פטור", "foot.address": "Mifrats Shlomo 53, Холон", "foot.terms": "Условия обслуживания",
       "order.title": "Ваш заказ", "order.mine": "Мой заказ →",
       "order.loading": "Загружаем заказ…", "order.notFound": "Заказ не найден", "order.notFoundText": "Проверьте ссылку из письма или свяжитесь с нами.",
       "order.st.registered": "Заказ принят", "order.st.washed": "Машина готова", "order.st.paid": "Оплачено",
@@ -386,6 +394,9 @@
       "order.tipLine": "Чаевые", "order.toPay": "К оплате", "order.pay": "Оплатить картой",
       "order.payHint": "Оплата на защищённой странице Morning. Квитанция (<bdi dir=\"rtl\">קבלה</bdi>) придёт на email.",
       "order.demo": "Демо-режим: оплата ещё не подключена.",
+      "order.clientName": "Квитанция на имя",
+      "order.agree": "Я прочитал(а) и принимаю <a href=\"terms.html\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent)\">условия обслуживания</a>",
+      "order.demoNote": "Это пример страницы оплаты. Настоящая страница со ссылкой на оплату открывается клиенту после мойки.",
       "order.payBit": "Оплатить через Bit", "order.st.processing": "Оплата обрабатывается",
       "order.processingText": "Спасибо! Оплата обрабатывается, квитанция придёт на email.",
       "order.payErr": "Не удалось открыть оплату. Попробуйте ещё раз или свяжитесь с нами.",
@@ -399,7 +410,7 @@
       p1: "1. פרטים", p2: "2. רכבים", p3: "3. שירותים", p4: "4. אישור",
       "s1.title": "הפרטים שלכם", "s1.text": "כדי שנוכל ליצור איתכם קשר.",
       "s1.first": "שם פרטי", "s1.firstErr": "נא למלא שם פרטי", "s1.last": "שם משפחה", "s1.lastErr": "נא למלא שם משפחה",
-      "s1.email": "אימייל", "s1.emailErr": "כתובת אימייל לא תקינה", "s1.phone": "טלפון", "s1.phoneErr": "מספר טלפון לא תקין",
+      "s1.email": "אימייל", "s1.emailErr": "כתובת אימייל לא תקינה", "s1.phone": "טלפון", "s1.phoneErr": "מספר טלפון לא תקין", "s1.country": "מדינה", "s1.countryIL": "ישראל", "s1.countryOther": "אחרת",
       "s1.company": "החברה שבה אתם עובדים", "s1.companyErr": "נא למלא את שם החברה",
       "s1.invoice": "על שם מי להוציא קבלה <span style=\"color:var(--ink-soft);font-weight:400\">(לא חובה)</span>",
       "s1.invoicePh": "שם פרטי או שם החברה", "s1.invoiceHint": "אם תשאירו ריק, הקבלה תצא על שמכם. בשלב זה איננו מוציאים חשבונית מס, אלא קבלה בלבד.",
@@ -428,7 +439,7 @@
       "sum.title": "ההזמנה שלכם", "sum.client": "לקוח", "sum.cars": "רכבים",
       "sum.empty": "לא נבחרו שירותים", "sum.total": "סה״כ",
       "sum.company": "חברה", "sum.note": "התשלום לאחר השטיפה.",
-      "foot.q": "שאלות?", "foot.terms": "תקנון",
+      "foot.q": "שאלות?", "foot.owner": "דניאל דובובסקי, עוסק פטור", "foot.address": "מפרץ שלמה 53, חולון", "foot.terms": "תקנון",
       "order.title": "ההזמנה שלכם", "order.mine": "ההזמנה שלי ←",
       "order.loading": "טוענים את ההזמנה…", "order.notFound": "ההזמנה לא נמצאה", "order.notFoundText": "בדקו את הקישור מהמייל או צרו איתנו קשר.",
       "order.st.registered": "ההזמנה התקבלה", "order.st.washed": "הרכב מוכן", "order.st.paid": "שולם",
@@ -440,6 +451,9 @@
       "order.tipLine": "טיפ", "order.toPay": "לתשלום", "order.pay": "תשלום בכרטיס אשראי",
       "order.payHint": "התשלום מתבצע בעמוד מאובטח של מורנינג. הקבלה תישלח למייל.",
       "order.demo": "מצב הדגמה: התשלום עדיין לא מחובר.",
+      "order.clientName": "קבלה על שם",
+      "order.agree": "קראתי ואני מאשר/ת את <a href=\"terms.html\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent)\">התקנון ותנאי השירות</a>",
+      "order.demoNote": "זהו עמוד תשלום לדוגמה. עמוד התשלום האמיתי נפתח ללקוח לאחר השטיפה.",
       "order.payBit": "תשלום ב־Bit", "order.st.processing": "התשלום בטיפול",
       "order.processingText": "תודה! התשלום בטיפול, הקבלה תישלח למייל.",
       "order.payErr": "לא הצלחנו לפתוח את התשלום. נסו שוב או צרו איתנו קשר.",
@@ -660,7 +674,7 @@
   async function submitOrder() {
     if (sending) return;
     const data = {
-      firstName: $("firstName").value.trim(), lastName: $("lastName").value.trim(),
+      firstName: $("firstName").value.trim(), lastName: $("lastName").value.trim(), country: $("country").value,
       company: $("company").value.trim(), invoiceName: $("invoiceName").value.trim(),
       email: $("email").value.trim(), phone: $("phone").value.trim(),
       cars: getCars().map(c => ({ model: c.model, plate: c.plate, class: c.cls })),
@@ -743,11 +757,17 @@
 
     const amount = order.total + tip;
     $("orderTotal").textContent = money(amount);
+    const client = [[t("order.clientName"), order.invoiceName || order.firstName], [t("s1.email"), order.email]].filter(([, v]) => v);
+    $("orderClient").replaceChildren(...client.map(([k, v]) => {
+      const row = document.createElement("div");
+      const b = document.createElement("b"); b.textContent = v;
+      row.append(k + ": ", b); return row;
+    }));
+    $("orderClient").hidden = !client.length;
     document.querySelectorAll("[data-pay]").forEach(b => {
       b.hidden = !PAY_METHODS.includes(b.dataset.pay);
       b.textContent = b.dataset.pay === "bit" ? t("order.payBit") : `${t("order.pay")} ${money(amount)}`;
-      b.disabled = paying || !ENDPOINT || order.id === "DEMO";
-      b.title = b.disabled && !paying ? t("order.demo") : "";
+      b.disabled = paying || (!ENDPOINT && order.id !== "DEMO");
     });
     document.querySelectorAll('#tips label[data-tip-label]').forEach(l => {
       l.textContent = l.dataset.tipLabel === "0" ? t("order.tipNone") : l.dataset.tipLabel === "other" ? t("order.tipOther") : money(+l.dataset.tipLabel);
@@ -759,6 +779,10 @@
 
   async function startPayment(method) {
     if (paying) return;
+    const agreed = $("payAgree").checked;
+    $("payAgreeError").classList.toggle("invalid", !agreed);
+    if (!agreed) { $("payAgree").focus(); return; }
+    if (order.id === "DEMO") { $("demoNote").hidden = false; return; }
     paying = true;
     $("payError").classList.remove("invalid");
     renderOrder();
@@ -776,6 +800,7 @@
   }
 
   function initOrderPage() {
+    $("payAgree").addEventListener("change", () => $("payAgreeError").classList.remove("invalid"));
     document.querySelectorAll("[data-pay]").forEach(b => b.addEventListener("click", () => startPayment(b.dataset.pay)));
     $("booking").hidden = true;
     $("orderCard").hidden = false;
@@ -800,7 +825,7 @@
     try {
       if (orderId === "DEMO" || !ENDPOINT) {
         // пример для просмотра без подключённой таблицы: ...?order=demo
-        order = { id: "DEMO", firstName: lang === "he" ? "דנה" : "Дана", invoiceName: "", email: "", carsCount: 1, lang,
+        order = { id: "DEMO", firstName: lang === "he" ? "דנה" : "Дана", invoiceName: lang === "he" ? "דנה כהן" : "Дана Коэн", email: "dana@example.com", carsCount: 1, lang,
           lines: [{ id: "full", sum: 150 }, { id: "headlights", sum: 200 }], total: 350, status: "washed" };
       } else {
         const out = await fetch(ENDPOINT + "?order=" + encodeURIComponent(orderId)).then(r => r.json());
